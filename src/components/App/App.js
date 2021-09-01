@@ -1,4 +1,4 @@
-import './App.css';
+import styles from './App.module.css';
 import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
 import Login from '../Login/Login';
 import { useEffect, useState } from 'react';
@@ -12,6 +12,7 @@ function requiresAuth(comp, isLoggedIn) {
 
 function App() {
   const [auth, setAuth] = useState({ isBusy: true, isLoggedIn: false });
+  const [loginBusy, setLoginBusy] = useState(false);
 
   useEffect(() => {
     Auth.isUserLoggedIn().then(val => {
@@ -29,10 +30,14 @@ function App() {
         {
           auth.isLoggedIn ?
             <Redirect to="" /> :
-            <Login onLoginClick={(username, password) => {
+            <Login className={styles.login} isBusy={loginBusy} onLoginClick={(username, password) => {
+              setLoginBusy(true);
               Auth
                 .login(username, password)
-                .then(isLoggedIn => setAuth({ isBusy: false, isLoggedIn }))
+                .then(isLoggedIn => {
+                  setLoginBusy(false);
+                  setAuth({ isBusy: false, isLoggedIn })
+                });
             }} />
         }
       </Route>
