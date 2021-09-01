@@ -1,18 +1,22 @@
-import './Login.css';
+import styles from './Login.module.css';
 import { useState } from 'react';
-import { Container, TextField, Button } from '@material-ui/core';
+import { Container, TextField, Button, CircularProgress } from '@material-ui/core';
+import LoadingButton from '../LoadingButton/LoadingButton';
 
-function Login({onLoginClick = () => {}}) {
+function Login({onLoginClick = () => {}, isBusy, className}) {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     return (
-        <Container className="login-form-container" maxWidth="xs">
+        <Container className={className} maxWidth="xs">
             <form>
                 <TextField label="Username" value={username} onChange={ev => setUsername(ev.target.value)} required fullWidth />
                 <TextField label="Password" value={password} onChange={ev => setPassword(ev.target.value)} required fullWidth />
-                <Button onClick={() => onLoginClick(username, password)} variant="contained" color="primary" fullWidth className="login-button">Login</Button>
+                <LoadingButton disabled={isBusy} isBusy={isBusy} onClick={() => onLoginClick(username, password)} variant="contained" color="primary" 
+                fullWidth className={styles.login_button} spinnerProps={{className: styles.spinner}}>
+                    Login
+                </LoadingButton>
             </form>
         </Container>
     );
