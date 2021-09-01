@@ -1,24 +1,45 @@
-import logo from './logo.svg';
 import './App.css';
+import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
+import Login from '../Login/Login';
+import { useEffect, useState } from 'react';
+import * as Auth from '../../api/Auth';
+import { CircularProgress } from '@material-ui/core';
+
+
+function requiresAuth(comp, isLoggedIn) {
+  return isLoggedIn ? comp : <Redirect to="/login" />
+}
 
 function App() {
+  const [auth, setAuth] = useState({ isBusy: true, isLoggedIn: false });
+
+  useEffect(() => {
+    Auth.isUserLoggedIn().then(val => {
+      setAuth({ isBusy: false, isLoggedIn: val });
+    });
+  }, []);
+
+  if (auth.isBusy) {
+    return <CircularProgress />;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Switch>
+      <Route path="/login">
+        {
+          auth.isLoggedIn ?
+            <Redirect to="" /> :
+            <Login onLoginClick={(username, password) => {
+              Auth
+                .login(username, password)
+                .then(isLoggedIn => setAuth({ isBusy: false, isLoggedIn }))
+            }} />
+        }
+      </Route>
+      <Route>
+        {requiresAuth(<div>Hello World</div>, auth.isLoggedIn)}
+      </Route>
+    </Switch>
   );
 }
 
