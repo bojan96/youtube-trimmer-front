@@ -1,6 +1,6 @@
 import styles from './Login.module.css';
 import { useState } from 'react';
-import { Container, TextField, Button, CircularProgress } from '@material-ui/core';
+import { Container, TextField} from '@material-ui/core';
 import LoadingButton from '../LoadingButton/LoadingButton';
 
 function Login({onLoginClick = () => {}, isBusy, className}) {

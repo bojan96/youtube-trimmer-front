@@ -1,5 +1,5 @@
 import styles from './App.module.css';
-import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import Login from '../Login/Login';
 import { useEffect, useState } from 'react';
 import * as Auth from '../../api/Auth';
