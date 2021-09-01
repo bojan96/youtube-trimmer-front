@@ -14,7 +14,7 @@ function Login({onLoginClick = () => {}, isBusy, className}) {
                 <TextField label="Username" value={username} onChange={ev => setUsername(ev.target.value)} required fullWidth />
                 <TextField label="Password" value={password} onChange={ev => setPassword(ev.target.value)} required fullWidth />
                 <LoadingButton disabled={isBusy} isBusy={isBusy} onClick={() => onLoginClick(username, password)} variant="contained" color="primary" 
-                fullWidth className={styles.login_button} spinnerProps={{className: styles.spinner}}>
+                fullWidth className={styles.login_button} spinnerProps={{size: 25, className: styles.spinner}}>
                     Login
                 </LoadingButton>
             </form>
