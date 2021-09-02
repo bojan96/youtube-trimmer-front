@@ -1,0 +1,9 @@
+.time_container {
+    display:flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+.submit_button {
+    margin-top: 25px;
+}

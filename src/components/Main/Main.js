@@ -2,6 +2,7 @@ import { AppBar, Box, Button, Toolbar } from "@material-ui/core";
 import { Route, Switch } from "react-router";
 import { NavLink } from "react-router-dom";
 import * as Auth from "../../api/Auth";
+import Job from "../Job/Job";
 import styles from './Main.module.css';
 
 
@@ -36,7 +37,7 @@ export default function Main({onLogout = () => {}}) {
             </AppBar>
             <Switch>
                 <Route path="/job/create">
-                    <div style={{ marginTop: "200px" }}>Create job</div>
+                    <Job className={`${styles.container_margin} ${styles.job_container}`}/>
                 </Route>
                 <Route path="/job">
                     <div style={{ marginTop: "200px" }}>Jobs</div>
