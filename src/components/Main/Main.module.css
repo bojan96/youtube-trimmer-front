@@ -6,6 +6,10 @@
     text-decoration: underline;
 }
 
+.toolbar_right_align {
+    margin-left: auto;
+}
+
 .active {
     text-decoration: underline;
 }
