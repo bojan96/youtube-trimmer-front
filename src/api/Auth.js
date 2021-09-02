@@ -1,15 +1,13 @@
 import { bearerAuthHeaders } from "../util/AuthUtils";
 import { makeEndpoint } from "../util/UrlUtils";
-
-const API_URL = "http://localhost:8080"
-const TOKEN_ITEM = "token"
+import config from './config.json';
 
 function createRequestUrl(endpoint) {
-    return makeEndpoint(API_URL, endpoint);
+    return makeEndpoint(config.API_URL, endpoint);
 }
 
 export async function isUserLoggedIn() {
-    const token = localStorage.getItem(TOKEN_ITEM);
+    const token = localStorage.getItem(config.TOKEN_ITEM);
 
     if (token == null) {
         return false;
@@ -37,12 +35,12 @@ export async function login(username, password) {
     });
 
     if (response.ok) {
-        localStorage.setItem(TOKEN_ITEM, await response.text())
+        localStorage.setItem(config.TOKEN_ITEM, await response.text());
     }
 
     return response.ok;
 }
 
 export function logout() {
-    localStorage.removeItem(TOKEN_ITEM);
+    localStorage.removeItem(config.TOKEN_ITEM);
 }
