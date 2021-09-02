@@ -1,0 +1,11 @@
+.toolbar_button {
+    color: white;
+}
+
+.toolbar_button:hover {
+    text-decoration: underline;
+}
+
+.active {
+    text-decoration: underline;
+}
