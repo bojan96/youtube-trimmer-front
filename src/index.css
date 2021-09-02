@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.loading_button_spinner {
+  color: white;
+  margin-left: 10px;
+  }
