@@ -1,10 +1,10 @@
 import { Button, CircularProgress } from "@material-ui/core";
 
-function LoadingButton({isBusy, spinnerProps, ...rest}) {
+function LoadingButton({isBusy, spinnerProps, children, ...rest}) {
 
     return (
         <Button {...rest}>
-            Login
+            {children}
             {isBusy ? <CircularProgress {...spinnerProps}/> : null}
         </Button>
     );
