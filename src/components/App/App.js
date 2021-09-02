@@ -4,6 +4,7 @@ import Login from '../Login/Login';
 import { useEffect, useState } from 'react';
 import * as Auth from '../../api/Auth';
 import { CircularProgress } from '@material-ui/core';
+import Main from '../Main/Main';
 
 
 function requiresAuth(comp, isLoggedIn) {
@@ -29,7 +30,7 @@ function App() {
       <Route path="/login">
         {
           auth.isLoggedIn ?
-            <Redirect to="" /> :
+            <Redirect to="/job/create" /> :
             <Login className={styles.login} isBusy={loginBusy} onLoginClick={(username, password) => {
               setLoginBusy(true);
               Auth
@@ -41,8 +42,11 @@ function App() {
             }} />
         }
       </Route>
+      <Route path="/job">
+        {requiresAuth(<Main/>, auth.isLoggedIn)}
+      </Route>
       <Route>
-        {requiresAuth(<div>Hello World</div>, auth.isLoggedIn)}
+        {requiresAuth(<Redirect to="/job/create"/>, auth.isLoggedIn)}
       </Route>
     </Switch>
   );
