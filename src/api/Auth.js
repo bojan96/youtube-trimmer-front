@@ -42,3 +42,7 @@ export async function login(username, password) {
 
     return response.ok;
 }
+
+export function logout() {
+    localStorage.removeItem(TOKEN_ITEM);
+}

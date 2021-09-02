@@ -43,7 +43,7 @@ function App() {
         }
       </Route>
       <Route path="/job">
-        {requiresAuth(<Main/>, auth.isLoggedIn)}
+        {requiresAuth(<Main onLogout={() => setAuth({isLoggedIn: false})}/>, auth.isLoggedIn)}
       </Route>
       <Route>
         {requiresAuth(<Redirect to="/job/create"/>, auth.isLoggedIn)}
