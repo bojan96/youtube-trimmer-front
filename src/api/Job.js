@@ -19,4 +19,22 @@ export async function createJob(job) {
     }
 }
 
+export async function getJobs()
+{
+    const endpoint = makeEndpoint(config.API_URL, "/api/job")
+    const token = localStorage.getItem(config.TOKEN_ITEM);
+
+    const response = await fetch(endpoint, {
+        method: "GET",
+        headers: bearerAuthHeaders(token, {"content-type": "application/json"})
+    });
+
+    if(!response.ok)
+    {
+        throw new Error(`Unable to retrieve user jobs, status code: ${response.status}`);
+    }
+
+    return response.json();
+}
+
 
