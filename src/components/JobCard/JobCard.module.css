@@ -1,0 +1,12 @@
+.job_card {
+    width: 300px;
+}
+
+.job_card_times_container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.job_download_button {
+    margin-left: auto;
+}
