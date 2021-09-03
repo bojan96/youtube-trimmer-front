@@ -11,8 +11,8 @@ function formatTime(sec) {
     const seconds = leftoverMin % 60;
 
     const hoursStr = hours.toLocaleString("en", { minimumIntegerDigits: 2, useGrouping: false });
-    const minutesStr = minutes.toLocaleString("en", {minimumIntegerDigits: 2, useGrouping: false});
-    const secondsStr = seconds.toLocaleString("en", {minimumIntegerDigits: 2, useGrouping: false});
+    const minutesStr = minutes.toLocaleString("en", { minimumIntegerDigits: 2, useGrouping: false });
+    const secondsStr = seconds.toLocaleString("en", { minimumIntegerDigits: 2, useGrouping: false });
 
     return `${hours > 0 ? hoursStr + ":" : ""}${minutesStr}:${secondsStr}`;
 }
@@ -23,7 +23,7 @@ const statusMap = {
     trimming: "Trimming video",
     complete: "Trim complete"
 }
-export default function Jobs({ job, onCancelClick = () =>{}, className = "", ...rest }) {
+export default function Jobs({ job, onCancelClick = () => { }, className = "", ...rest }) {
 
     return (
         <Card variant="outlined" className={`${styles.job_card} ${className}`}>
@@ -32,7 +32,10 @@ export default function Jobs({ job, onCancelClick = () =>{}, className = "", ...
                     <Link target="_blank" href={job.videoUrl}>Open video</Link>
                 } action={
                     <Tooltip title="cancel">
-                        <IconButton onClick={() => onCancelClick(job.id)} size="small">
+                        <IconButton
+                            disabled={job.status === "complete"}
+                            onClick={() => onCancelClick(job.id)}
+                            size="small">
                             <CancelIcon />
                         </IconButton>
                     </Tooltip>}>
