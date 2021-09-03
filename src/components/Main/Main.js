@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router";
 import { NavLink } from "react-router-dom";
 import * as Auth from "../../api/Auth";
 import Job from "../Job/Job";
+import Jobs from "../Jobs/Jobs";
 import styles from './Main.module.css';
 
 
@@ -40,7 +41,7 @@ export default function Main({onLogout = () => {}}) {
                     <Job className={`${styles.container_margin} ${styles.job_container}`}/>
                 </Route>
                 <Route path="/job">
-                    <div style={{ marginTop: "200px" }}>Jobs</div>
+                    <Jobs className={styles.container_margin}/>
                 </Route>
             </Switch>
         </Box>
