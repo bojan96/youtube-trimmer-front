@@ -1,4 +1,4 @@
-import { Card, CardActions, CardContent, CardHeader, Container, IconButton, Link, Tooltip, Typography } from "@material-ui/core";
+import { Card, CardActions, CardContent, CardHeader, IconButton, Link, Tooltip, Typography } from "@material-ui/core";
 import CancelIcon from '@material-ui/icons/Cancel';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import styles from './JobCard.module.css';
