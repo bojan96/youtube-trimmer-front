@@ -8,5 +8,7 @@ export function makeEndpoint(base, endpoint, params = {}) {
         endpoint = endpoint.substring(0, endpoint.length - 1);
     }
 
-    return new URL(`${endpoint}?${concatParams}`, base).toString();
+    const queryString = paramsArray.length > 0 ? `?${concatParams}`: "";
+
+    return new URL(`${endpoint}${queryString}`, base).toString();
 }
