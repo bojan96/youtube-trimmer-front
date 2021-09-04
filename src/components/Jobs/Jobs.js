@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styles from './Jobs.module.css';
 import * as JobApi from "../../api/Job";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
+import { useRef } from "react";
 
 export default function Jobs({ className = "", ...rest }) {
 
@@ -11,12 +12,36 @@ export default function Jobs({ className = "", ...rest }) {
     const [dialog, setDialog] = useState({ isOpen: false, data: { id: null } });
     const [isCanceling, setIsCanceling] = useState(false);
     const [retrieveJobs, setRetrieveJobs] = useState(false);
+    const subscription = useRef(null);
 
     useEffect(() => {
         JobApi.getJobs().then(jobs => {
             setUserJobs(jobs);
         });
     }, [retrieveJobs]);
+
+    useEffect(() => {
+        subscription.current = JobApi.subscribeJobEvents((jobEvent) => {
+
+            setUserJobs(userJobs => {
+                const userJobsCopy = Array.from(userJobs);
+                const jobIndex = userJobsCopy.findIndex(job => job.id === jobEvent.id);
+                if (jobIndex !== -1) {
+                    const job = userJobsCopy[jobIndex];
+                    const jobCopy = { ...job }
+                    jobCopy.status = jobEvent.newStatus;
+                    userJobsCopy[jobIndex] = jobCopy;
+                    return userJobsCopy;
+                }
+                else {
+                    return userJobs;
+                }
+            });
+        });
+        return () => {
+            subscription.current.unsubscribe();
+        }
+    }, []);
 
     return (
         <>

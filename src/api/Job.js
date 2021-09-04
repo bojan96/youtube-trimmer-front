@@ -1,3 +1,4 @@
+import { Client } from "@stomp/stompjs";
 import { bearerAuthHeaders } from "../util/AuthUtils";
 import { makeEndpoint } from "../util/UrlUtils";
 import config from './config.json';
@@ -46,6 +47,37 @@ export async function cancelJob(jobId) {
     if (!response.ok) {
         throw new Error(`Unable to cancel job, status code: ${response.status}`);
     }
+}
+
+function unsubscribe()
+{
+    this.subscription.unsubscribe();
+    this.client.deactivate();
+}
+
+export function subscribeJobEvents(callback) {
+
+    const subscriptionData = {};
+    const token = localStorage.getItem(config.TOKEN_ITEM);
+    const client = new Client({
+        brokerURL: config.STOMP_URL,
+        connectHeaders: {
+            authorization: token
+        }
+    });
+
+    client.onConnect = () => {
+        const subscription = client.subscribe(config.JOB_EVENTS_PATH, (msg) => {
+            callback(JSON.parse(msg.body));
+        });
+        subscriptionData.subscription = subscription;
+    };
+
+    client.activate();
+    subscriptionData.client = client;
+    subscriptionData.unsubscribe = unsubscribe.bind(subscriptionData);
+
+    return subscriptionData;
 }
 
 
