@@ -11,3 +11,11 @@
 .no_jobs_text {
     margin: auto;
 }
+
+.backdrop {
+    z-index: 1101;
+}
+
+.backdrop_progress {
+    color: white;
+}

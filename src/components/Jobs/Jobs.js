@@ -1,4 +1,4 @@
-import { Container, Typography, } from "@material-ui/core";
+import { Backdrop, CircularProgress, Container, Typography, } from "@material-ui/core";
 import JobCard from '../JobCard/JobCard'
 import { useEffect, useState } from "react";
 import styles from './Jobs.module.css';
@@ -9,14 +9,17 @@ import { useRef } from "react";
 export default function Jobs({ className = "", ...rest }) {
 
     const [userJobs, setUserJobs] = useState([]);
+    const [loadingJobs, setLoadingJobs] = useState(true);
     const [dialog, setDialog] = useState({ isOpen: false, data: { id: null } });
     const [isCanceling, setIsCanceling] = useState(false);
     const [retrieveJobs, setRetrieveJobs] = useState(false);
     const subscription = useRef(null);
 
     useEffect(() => {
+        setLoadingJobs(true);
         JobApi.getJobs().then(jobs => {
             setUserJobs(jobs);
+            setLoadingJobs(false);
         });
     }, [retrieveJobs]);
 
@@ -43,6 +46,21 @@ export default function Jobs({ className = "", ...rest }) {
         }
     }, []);
 
+
+    function renderBody()
+    {
+        return userJobs.length > 0 ?
+                        userJobs.map(job =>
+                            <JobCard
+                                onCancelClick={id => {
+                                    setDialog({ isOpen: true, data: { id } });
+                                }}
+                                job={job}
+                                className={styles.job_card}
+                                key={job.id} />)
+                        : <Typography className={styles.no_jobs_text} variant="h4">No jobs</Typography>
+    }
+
     return (
         <>
             <ConfirmDialog
@@ -66,19 +84,12 @@ export default function Jobs({ className = "", ...rest }) {
                 }}
                 confirmBttnText="Yes"
                 rejectBttnText="No" />
+
+            <Backdrop className={styles.backdrop} open={loadingJobs}>
+                <CircularProgress className={styles.backdrop_progress}/>
+            </Backdrop>
             <Container className={`${className} ${styles.jobs_container}`} {...rest}>
-                {
-                    userJobs.length > 0 ?
-                        userJobs.map(job =>
-                            <JobCard
-                                onCancelClick={id => {
-                                    setDialog({ isOpen: true, data: { id } });
-                                }}
-                                job={job}
-                                className={styles.job_card}
-                                key={job.id} />)
-                        : <Typography className={styles.no_jobs_text} variant="h4">No jobs</Typography>
-                }
+                { !loadingJobs ? renderBody() : null }
             </Container>
         </>
     );
