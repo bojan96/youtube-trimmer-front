@@ -4,8 +4,7 @@ function LoadingButton({isBusy, spinnerProps, children, ...rest}) {
 
     return (
         <Button {...rest}>
-            {children}
-            {isBusy ? <CircularProgress {...spinnerProps}/> : null}
+            {isBusy ? <CircularProgress {...spinnerProps}/> : children}
         </Button>
     );
 }
