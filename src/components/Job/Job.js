@@ -56,6 +56,7 @@ export default function Job(props) {
                         className: "loading_button_spinner"
                     }}
                     isBusy={isBusy}
+                    disabled={isBusy}
                     className={styles.submit_button}
                     color="primary"
                     variant="contained"
