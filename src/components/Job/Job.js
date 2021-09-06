@@ -4,13 +4,26 @@ import LoadingButton from '../LoadingButton/LoadingButton';
 import * as JobApi from '../../api/Job';
 import styles from './Job.module.css'
 import { useHistory } from "react-router-dom";
+import TimeInput from "../TimeInput/TimeInput";
 
+
+function validateUrl(url) {
+    const urlObj = new URL(url);
+    const hostnameRegex = /^(www.)?youtube\.com$/;
+    return hostnameRegex.test(urlObj.hostname) 
+    && urlObj.pathname === "/watch" 
+    && urlObj.searchParams.get("v") != null;
+}
 
 export default function Job(props) {
 
+    const timeRegex = /[0-9]{2}:[0-5][0-9]:[0-5][0-9]/
     const [videoUrl, setVideoUrl] = useState("");
-    const [trimFrom, setTrimFrom] = useState(0);
-    const [trimTo, setTrimTo] = useState(0);
+    const [trimFrom, setTrimFrom] = useState("");
+    const [trimTo, setTrimTo] = useState("");
+    const [trimFromValidation, setTrimFromValidation] = useState(null);
+    const [trimToValidation, setTrimToValidation] = useState(null);
+    const [videoUrlValidation, setVideoUrlValidation] = useState(null);
     const [isBusy, setIsBusy] = useState(false);
     const history = useHistory();
 
@@ -18,6 +31,39 @@ export default function Job(props) {
         <Container maxWidth="xs" {...props}>
             <form onSubmit={ev => {
                 ev.preventDefault();
+                let formInvalid = false;
+
+                if (trimFrom === "") {
+                    setTrimFromValidation("Required");
+                    formInvalid = true;
+                }
+                else if (!timeRegex.test(trimFrom)) {
+                    setTrimFromValidation("Invalid time value");
+                    formInvalid = true;
+                }
+
+                if (trimTo === "") {
+                    setTrimToValidation("Required");
+                    formInvalid = true;
+                }
+                else if (!timeRegex.text(trimTo)) {
+                    setTrimToValidation("Invalid time value");
+                    formInvalid = true;
+                }
+
+                if (videoUrl === "") {
+                    setVideoUrlValidation("Required");
+                    formInvalid = true;
+                }
+                else if(!validateUrl(videoUrl))
+                {
+                    setVideoUrlValidation("Invalid url")
+                    formInvalid = true;
+                }
+
+                if (formInvalid) {
+                    return;
+                }
                 setIsBusy(true);
                 JobApi.createJob({ trimFrom, trimTo, videoUrl })
                     .then(() => {
@@ -28,27 +74,35 @@ export default function Job(props) {
             }}>
                 <TextField
                     value={videoUrl}
-                    onChange={ev => setVideoUrl(ev.target.value)}
-                    required
+                    onChange={ev => {
+                        setVideoUrlValidation(null);
+                        setVideoUrl(ev.target.value);
+                    }}
                     fullWidth
-                    label="Youtube URL" />
+                    label="Youtube URL"
+                    error={videoUrlValidation != null}
+                    helperText={videoUrlValidation} />
                 <Container
                     disableGutters={true}
                     className={styles.time_container}>
-                    <TextField
-                        inputProps={{ min: 0 }}
+                    <TimeInput
                         value={trimFrom}
-                        onChange={ev => setTrimFrom(ev.target.value)}
+                        onChange={ev => {
+                            setTrimFromValidation(null);
+                            setTrimFrom(ev.target.value)
+                        }}
                         label="From"
-                        required
-                        type="number" />
-                    <TextField
-                        inputProps={{ min: 0 }}
+                        error={trimFromValidation != null}
+                        helperText={trimFromValidation} />
+                    <TimeInput
                         value={trimTo}
-                        onChange={ev => setTrimTo(ev.target.value)}
+                        onChange={ev => {
+                            setTrimToValidation(null);
+                            setTrimTo(ev.target.value)
+                        }}
                         label="To"
-                        required
-                        type="number" />
+                        error={trimToValidation != null}
+                        helperText={trimToValidation} />
                 </Container>
                 <LoadingButton
                     spinnerProps={{
