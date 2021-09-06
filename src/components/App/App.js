@@ -3,7 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import Login from '../Login/Login';
 import { useEffect, useState } from 'react';
 import * as Auth from '../../api/Auth';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Backdrop } from '@material-ui/core';
 import Main from '../Main/Main';
 
 
@@ -22,7 +22,10 @@ function App() {
   }, []);
 
   if (auth.isBusy) {
-    return <CircularProgress />;
+    return (
+      <Backdrop open={auth.isBusy}>
+        <CircularProgress />
+      </Backdrop>);
   }
 
   return (
@@ -43,10 +46,10 @@ function App() {
         }
       </Route>
       <Route path="/job">
-        {requiresAuth(<Main onLogout={() => setAuth({isLoggedIn: false})}/>, auth.isLoggedIn)}
+        {requiresAuth(<Main onLogout={() => setAuth({ isLoggedIn: false })} />, auth.isLoggedIn)}
       </Route>
       <Route>
-        {requiresAuth(<Redirect to="/job/create"/>, auth.isLoggedIn)}
+        {requiresAuth(<Redirect to="/job/create" />, auth.isLoggedIn)}
       </Route>
     </Switch>
   );
