@@ -8,11 +8,26 @@ import TimeInput from "../TimeInput/TimeInput";
 
 
 function validateUrl(url) {
-    const urlObj = new URL(url);
-    const hostnameRegex = /^(www.)?youtube\.com$/;
-    return hostnameRegex.test(urlObj.hostname) 
-    && urlObj.pathname === "/watch" 
-    && urlObj.searchParams.get("v") != null;
+    try {
+        const urlObj = new URL(url);
+        const hostnameRegex = /^(www.)?youtube\.com$/;
+        return hostnameRegex.test(urlObj.hostname)
+            && urlObj.pathname === "/watch"
+            && urlObj.searchParams.get("v") != null;
+    }
+    catch (e) {
+        return false;
+    }
+}
+
+
+function parseTime(time) {
+    const parts = time.split(":");
+    const hour = parseInt(parts[0]);
+    const min = parseInt(parts[1]);
+    const seconds = parseInt(parts[2]);
+
+    return hour * 3600 + min * 60 + seconds;
 }
 
 export default function Job(props) {
@@ -46,7 +61,7 @@ export default function Job(props) {
                     setTrimToValidation("Required");
                     formInvalid = true;
                 }
-                else if (!timeRegex.text(trimTo)) {
+                else if (!timeRegex.test(trimTo)) {
                     setTrimToValidation("Invalid time value");
                     formInvalid = true;
                 }
@@ -55,8 +70,7 @@ export default function Job(props) {
                     setVideoUrlValidation("Required");
                     formInvalid = true;
                 }
-                else if(!validateUrl(videoUrl))
-                {
+                else if (!validateUrl(videoUrl)) {
                     setVideoUrlValidation("Invalid url")
                     formInvalid = true;
                 }
@@ -65,7 +79,7 @@ export default function Job(props) {
                     return;
                 }
                 setIsBusy(true);
-                JobApi.createJob({ trimFrom, trimTo, videoUrl })
+                JobApi.createJob({ trimFrom: parseTime(trimFrom), trimTo: parseTime(trimTo), videoUrl })
                     .then(() => {
                         setIsBusy(false);
                         history.push("/job");
