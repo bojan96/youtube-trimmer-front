@@ -12,14 +12,13 @@ InputMask.extendDefinitions({
 export default function TimeInput(props) {
 
     useEffect(() => {
-        InputMask().mask(document.querySelectorAll("input[data-useinputmask]"));
+        InputMask({mask: "99:59:59", placeholder: "0"}).mask(document.querySelectorAll("input[data-useinputmask]"));
     });
 
     return (
         <TextField {...props}
             inputProps={{
-                "data-useinputmask": true,
-                "data-inputmask-mask": "99:59:59"
+                "data-useinputmask": true
             }}/>
     );
 }
