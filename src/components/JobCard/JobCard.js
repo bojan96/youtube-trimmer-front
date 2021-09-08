@@ -48,7 +48,10 @@ export default function Jobs({ job, onCancelClick = () => { }, className = "", .
                 <Typography>Job status: {statusMap[job.status]}</Typography>
             </CardContent>
             <CardActions>
-                <IconButton disabled={job.downloadUrl === null} className={styles.job_download_button}>
+                <IconButton
+                    disabled={job.downloadUrl === null}
+                    className={styles.job_download_button}
+                    onClick={() => window.open(job.downloadUrl, "_blank")}>
                     <GetAppIcon />
                 </IconButton>
             </CardActions>

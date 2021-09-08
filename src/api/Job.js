@@ -21,7 +21,7 @@ export async function getJobs() {
 
     const response = await fetch(endpoint, {
         method: "GET",
-        headers: bearerAuthHeaders(token, { "content-type": "application/json" })
+        headers: bearerAuthHeaders(token)
     });
 
     return await response.json();
@@ -33,7 +33,7 @@ export async function cancelJob(jobId) {
 
     await fetch(endpoint, {
         method: "POST",
-        headers: bearerAuthHeaders(token, { "content-type": "application/json" })
+        headers: bearerAuthHeaders(token)
     });
 }
 
@@ -66,6 +66,19 @@ export function subscribeJobEvents(callback) {
     subscriptionData.unsubscribe = unsubscribe.bind(subscriptionData);
 
     return subscriptionData;
+}
+
+export async function getJob(id)
+{
+    const endpoint = makeEndpoint(config.API_URL, `/api/job/${id}`)
+    const token = localStorage.getItem(config.TOKEN_ITEM);
+
+    const response = await fetch(endpoint, {
+        method: "GET",
+        headers: bearerAuthHeaders(token)
+    });
+
+    return await response.json();
 }
 
 

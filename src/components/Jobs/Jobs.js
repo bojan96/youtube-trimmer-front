@@ -24,22 +24,45 @@ export default function Jobs({ className = "", ...rest }) {
     }, [retrieveJobs]);
 
     useEffect(() => {
-        subscription.current = JobApi.subscribeJobEvents((jobEvent) => {
+        subscription.current = JobApi.subscribeJobEvents(jobEvent => {
 
-            setUserJobs(userJobs => {
-                const userJobsCopy = Array.from(userJobs);
-                const jobIndex = userJobsCopy.findIndex(job => job.id === jobEvent.id);
-                if (jobIndex !== -1) {
-                    const job = userJobsCopy[jobIndex];
-                    const jobCopy = { ...job }
-                    jobCopy.status = jobEvent.newStatus;
-                    userJobsCopy[jobIndex] = jobCopy;
-                    return userJobsCopy;
-                }
-                else {
-                    return userJobs;
-                }
-            });
+            if (jobEvent.newStatus !== "complete") {
+
+                setUserJobs(userJobs => {
+                    const userJobsCopy = Array.from(userJobs);
+                    const jobIndex = userJobsCopy.findIndex(job => job.id === jobEvent.id);
+                    if (jobIndex !== -1) {
+                        const job = userJobsCopy[jobIndex];
+                        const jobCopy = { ...job }
+                        jobCopy.status = jobEvent.newStatus;
+                        userJobsCopy[jobIndex] = jobCopy;
+                        return userJobsCopy;
+                    }
+                    else {
+                        return userJobs;
+                    }
+                });
+            }
+            else {
+                JobApi.getJob(jobEvent.id).then(jobResponse => {
+                    setUserJobs(userJobs => {
+                        const userJobsCopy = Array.from(userJobs);
+                        const jobIndex = userJobsCopy.findIndex(job => job.id === jobEvent.id);
+                        if (jobIndex !== -1) {
+                            const job = userJobsCopy[jobIndex];
+                            const jobCopy = { ...job }
+                            jobCopy.downloadUrl = jobResponse.downloadUrl
+                            jobCopy.status = jobEvent.newStatus
+                            userJobsCopy[jobIndex] = jobCopy;
+                            return userJobsCopy;
+                        }
+                        else {
+                            return userJobs;
+                        }
+                    })
+                });
+            }
+
         });
         return () => {
             subscription.current.unsubscribe();
@@ -47,18 +70,17 @@ export default function Jobs({ className = "", ...rest }) {
     }, []);
 
 
-    function renderBody()
-    {
+    function renderBody() {
         return userJobs.length > 0 ?
-                        userJobs.map(job =>
-                            <JobCard
-                                onCancelClick={id => {
-                                    setDialog({ isOpen: true, data: { id } });
-                                }}
-                                job={job}
-                                className={styles.job_card}
-                                key={job.id} />)
-                        : <Typography className={styles.no_jobs_text} variant="h4">No jobs</Typography>
+            userJobs.map(job =>
+                <JobCard
+                    onCancelClick={id => {
+                        setDialog({ isOpen: true, data: { id } });
+                    }}
+                    job={job}
+                    className={styles.job_card}
+                    key={job.id} />)
+            : <Typography className={styles.no_jobs_text} variant="h4">No jobs</Typography>
     }
 
     return (
@@ -86,10 +108,10 @@ export default function Jobs({ className = "", ...rest }) {
                 rejectBttnText="No" />
 
             <Backdrop className={styles.backdrop} open={loadingJobs}>
-                <CircularProgress className={styles.backdrop_progress}/>
+                <CircularProgress className={styles.backdrop_progress} />
             </Backdrop>
             <Container className={`${className} ${styles.jobs_container}`} {...rest}>
-                { !loadingJobs ? renderBody() : null }
+                {!loadingJobs ? renderBody() : null}
             </Container>
         </>
     );
