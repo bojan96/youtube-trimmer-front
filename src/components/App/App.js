@@ -2,7 +2,7 @@ import styles from './App.module.css';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import Login from '../Login/Login';
 import { useEffect, useState } from 'react';
-import * as Auth from '../../api/Auth';
+import * as AuthApi from '../../api/Auth';
 import { CircularProgress, Backdrop } from '@material-ui/core';
 import Main from '../Main/Main';
 
@@ -16,7 +16,7 @@ function App() {
   const [loginBusy, setLoginBusy] = useState(false);
 
   useEffect(() => {
-    Auth.isUserLoggedIn().then(val => {
+    AuthApi.isUserLoggedIn().then(val => {
       setAuth({ isBusy: false, isLoggedIn: val });
     });
   }, []);
@@ -36,7 +36,7 @@ function App() {
             <Redirect to="/job/create" /> :
             <Login className={styles.login} isBusy={loginBusy} onLoginClick={(username, password) => {
               setLoginBusy(true);
-              Auth
+              AuthApi
                 .login(username, password)
                 .then(isLoggedIn => {
                   setLoginBusy(false);
