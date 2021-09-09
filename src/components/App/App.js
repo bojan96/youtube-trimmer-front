@@ -3,7 +3,8 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import Login from '../Login/Login';
 import { useEffect, useState } from 'react';
 import * as AuthApi from '../../api/Auth';
-import { CircularProgress, Backdrop } from '@material-ui/core';
+import { CircularProgress, Backdrop, Snackbar } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 import Main from '../Main/Main';
 
 
@@ -14,6 +15,35 @@ function requiresAuth(comp, isLoggedIn) {
 function App() {
   const [auth, setAuth] = useState({ isBusy: true, isLoggedIn: false });
   const [loginBusy, setLoginBusy] = useState(false);
+  const [invalidCredentialsOpen, setInvalidCredentialsOpen] = useState(false);
+
+
+  function notLoggedInCompGroup() {
+    return (
+      <>
+        <Snackbar
+          autoHideDuration={5000}
+          onClose={() => setInvalidCredentialsOpen(false)}
+          open={invalidCredentialsOpen}
+          anchorOrigin={{ horizontal: "center", vertical: "top" }}>
+          <Alert severity="error" variant="filled">
+            Invalid credentials
+          </Alert>
+        </Snackbar>
+        <Login className={styles.login} isBusy={loginBusy} onLoginClick={(username, password) => {
+          setLoginBusy(true);
+          AuthApi
+            .login(username, password)
+            .then(isLoggedIn => {
+              setLoginBusy(false);
+              if (!isLoggedIn) {
+                setInvalidCredentialsOpen(true);
+              }
+              setAuth({ isBusy: false, isLoggedIn })
+            });
+        }} />
+      </>);
+  }
 
   useEffect(() => {
     AuthApi.isUserLoggedIn().then(val => {
@@ -33,16 +63,7 @@ function App() {
       <Route path="/login">
         {
           auth.isLoggedIn ?
-            <Redirect to="/job/create" /> :
-            <Login className={styles.login} isBusy={loginBusy} onLoginClick={(username, password) => {
-              setLoginBusy(true);
-              AuthApi
-                .login(username, password)
-                .then(isLoggedIn => {
-                  setLoginBusy(false);
-                  setAuth({ isBusy: false, isLoggedIn })
-                });
-            }} />
+            <Redirect to="/job/create" /> : notLoggedInCompGroup()
         }
       </Route>
       <Route path="/job">
