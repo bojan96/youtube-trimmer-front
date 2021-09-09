@@ -1,12 +1,12 @@
 import { Client } from "@stomp/stompjs";
 import { bearerAuthHeaders } from "../util/AuthUtils";
 import { makeEndpoint } from "../util/UrlUtils";
-import config from './config.json';
+import constants from './constants.json';
 
 export async function createJob(job) {
 
-    const endpoint = makeEndpoint(config.API_URL, "/api/job");
-    const token = localStorage.getItem(config.TOKEN_ITEM)
+    const endpoint = makeEndpoint(process.env.REACT_APP_API_URL, "/api/job");
+    const token = localStorage.getItem(constants.TOKEN_ITEM)
 
     await fetch(endpoint, {
         method: "POST",
@@ -16,8 +16,8 @@ export async function createJob(job) {
 }
 
 export async function getJobs() {
-    const endpoint = makeEndpoint(config.API_URL, "/api/job")
-    const token = localStorage.getItem(config.TOKEN_ITEM);
+    const endpoint = makeEndpoint(process.env.REACT_APP_API_URL, "/api/job")
+    const token = localStorage.getItem(constants.TOKEN_ITEM);
 
     const response = await fetch(endpoint, {
         method: "GET",
@@ -28,8 +28,8 @@ export async function getJobs() {
 }
 
 export async function cancelJob(jobId) {
-    const endpoint = makeEndpoint(config.API_URL, `/api/job/${jobId}/cancel`)
-    const token = localStorage.getItem(config.TOKEN_ITEM);
+    const endpoint = makeEndpoint(process.env.REACT_APP_API_URL, `/api/job/${jobId}/cancel`)
+    const token = localStorage.getItem(constants.TOKEN_ITEM);
 
     await fetch(endpoint, {
         method: "POST",
@@ -46,16 +46,16 @@ function unsubscribe()
 export function subscribeJobEvents(callback) {
 
     const subscriptionData = {};
-    const token = localStorage.getItem(config.TOKEN_ITEM);
+    const token = localStorage.getItem(constants.TOKEN_ITEM);
     const client = new Client({
-        brokerURL: config.STOMP_URL,
+        brokerURL: process.env.REACT_APP_STOMP_URL,
         connectHeaders: {
             authorization: token
         }
     });
 
     client.onConnect = () => {
-        const subscription = client.subscribe(config.JOB_EVENTS_PATH, (msg) => {
+        const subscription = client.subscribe(constants.JOB_EVENTS_PATH, (msg) => {
             callback(JSON.parse(msg.body));
         });
         subscriptionData.subscription = subscription;
@@ -70,8 +70,8 @@ export function subscribeJobEvents(callback) {
 
 export async function getJob(id)
 {
-    const endpoint = makeEndpoint(config.API_URL, `/api/job/${id}`)
-    const token = localStorage.getItem(config.TOKEN_ITEM);
+    const endpoint = makeEndpoint(process.env.REACT_APP_API_URL, `/api/job/${id}`)
+    const token = localStorage.getItem(constants.TOKEN_ITEM);
 
     const response = await fetch(endpoint, {
         method: "GET",

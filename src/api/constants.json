@@ -1,0 +1,4 @@
+{
+    "TOKEN_ITEM": "token",
+    "JOB_EVENTS_PATH": "/user/queue/job-events"
+}

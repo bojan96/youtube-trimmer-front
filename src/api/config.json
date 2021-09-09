@@ -1,6 +1,0 @@
-{
-    "API_URL": "http://localhost:8080",
-    "STOMP_URL": "ws://localhost:8080/stomp",
-    "TOKEN_ITEM": "token",
-    "JOB_EVENTS_PATH": "/user/queue/job-events"
-}
