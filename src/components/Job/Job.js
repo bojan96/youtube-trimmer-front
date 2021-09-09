@@ -65,6 +65,11 @@ export default function Job(props) {
                     setTrimToValidation("Invalid time value");
                     formInvalid = true;
                 }
+                else if(parseTime(trimFrom) >= parseTime(trimTo))
+                {
+                    setTrimToValidation("Must be greater than start time point");
+                    formInvalid = true;
+                }
 
                 if (videoUrl === "") {
                     setVideoUrlValidation("Required");
