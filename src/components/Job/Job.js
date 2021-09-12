@@ -1,5 +1,5 @@
 import { Container, TextField } from "@material-ui/core";
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import LoadingButton from '../LoadingButton/LoadingButton';
 import * as JobApi from '../../api/Job';
 import styles from './Job.module.css'
@@ -34,8 +34,8 @@ export default function Job(props) {
 
     const timeRegex = /[0-9]{2}:[0-5][0-9]:[0-5][0-9]/
     const [videoUrl, setVideoUrl] = useState("");
-    const [trimFrom, setTrimFrom] = useState("");
-    const [trimTo, setTrimTo] = useState("");
+    const trimFromInput = useRef("");
+    const trimToInput = useRef("");
     const [trimFromValidation, setTrimFromValidation] = useState(null);
     const [trimToValidation, setTrimToValidation] = useState(null);
     const [videoUrlValidation, setVideoUrlValidation] = useState(null);
@@ -47,6 +47,9 @@ export default function Job(props) {
             <form onSubmit={ev => {
                 ev.preventDefault();
                 let formInvalid = false;
+                const trimFrom = trimFromInput.current;
+                const trimTo = trimToInput.current;
+                
 
                 if (trimFrom === "") {
                     setTrimFromValidation("Required");
@@ -105,19 +108,17 @@ export default function Job(props) {
                     disableGutters={true}
                     className={styles.time_container}>
                     <TimeInput
-                        value={trimFrom}
                         onChange={ev => {
                             setTrimFromValidation(null);
-                            setTrimFrom(ev.target.value)
+                            trimFromInput.current = ev.target.value;
                         }}
                         label="From"
                         error={trimFromValidation != null}
                         helperText={trimFromValidation} />
                     <TimeInput
-                        value={trimTo}
                         onChange={ev => {
                             setTrimToValidation(null);
-                            setTrimTo(ev.target.value)
+                            trimToInput.current = ev.target.value;
                         }}
                         label="To"
                         error={trimToValidation != null}

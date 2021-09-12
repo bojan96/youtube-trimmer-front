@@ -31,13 +31,15 @@ export default function Jobs({ job, onCancelClick = () => { }, className = "", .
                 subheader={
                     <Link target="_blank" href={job.videoUrl}>Open video</Link>
                 } action={
-                    <Tooltip title="cancel">
-                        <IconButton
-                            disabled={job.status === "complete"}
-                            onClick={() => onCancelClick(job.id)}
-                            size="small">
-                            <CancelIcon />
-                        </IconButton>
+                    <Tooltip title="Cancel">
+                        <span>
+                            <IconButton
+                                disabled={job.status === "complete"}
+                                onClick={() => onCancelClick(job.id)}
+                                size="small">
+                                <CancelIcon />
+                            </IconButton>
+                        </span>
                     </Tooltip>}>
             </CardHeader>
             <CardContent>
@@ -49,14 +51,15 @@ export default function Jobs({ job, onCancelClick = () => { }, className = "", .
             </CardContent>
             <CardActions>
                 {
-                    job.status === "complete" ? 
-                    <IconButton
-                        disabled={job.downloadUrl === null}
-                        className={styles.progress}
-                        onClick={() => window.open(job.downloadUrl, "_blank")}>
-                        <GetAppIcon />
-                    </IconButton>
-                    : <CircularProgress className={styles.job_download_button}/>
+                    job.status === "complete" ?
+                        <Tooltip title="Download">
+                            <IconButton
+                                className={styles.progress}
+                                onClick={() => window.open(job.downloadUrl, "_blank")}>
+                                <GetAppIcon />
+                            </IconButton>
+                        </Tooltip>
+                        : <CircularProgress className={styles.job_download_button} />
                 }
             </CardActions>
         </Card>
