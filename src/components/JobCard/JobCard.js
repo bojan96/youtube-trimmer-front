@@ -1,4 +1,4 @@
-import { Card, CardActions, CardContent, CardHeader, IconButton, Link, Tooltip, Typography } from "@material-ui/core";
+import { Card, CardActions, CardContent, CardHeader, CircularProgress, IconButton, Link, Tooltip, Typography } from "@material-ui/core";
 import CancelIcon from '@material-ui/icons/Cancel';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import styles from './JobCard.module.css';
@@ -48,12 +48,16 @@ export default function Jobs({ job, onCancelClick = () => { }, className = "", .
                 <Typography>Job status: {statusMap[job.status]}</Typography>
             </CardContent>
             <CardActions>
-                <IconButton
-                    disabled={job.downloadUrl === null}
-                    className={styles.job_download_button}
-                    onClick={() => window.open(job.downloadUrl, "_blank")}>
-                    <GetAppIcon />
-                </IconButton>
+                {
+                    job.status === "complete" ? 
+                    <IconButton
+                        disabled={job.downloadUrl === null}
+                        className={styles.progress}
+                        onClick={() => window.open(job.downloadUrl, "_blank")}>
+                        <GetAppIcon />
+                    </IconButton>
+                    : <CircularProgress className={styles.job_download_button}/>
+                }
             </CardActions>
         </Card>
     );
